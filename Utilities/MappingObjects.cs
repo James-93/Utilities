@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Utilities
+namespace Utilities.Mapping
 {
-    public class MappingObjects
+    public static class MappingChildren
     {
-        public IEnumerable<T> MapChildren<T, N>(IEnumerable<T> Parents, IEnumerable<N> Children, string MatchingField, string ChildListAtributeName)
+        public static void MapChildren<T, N>(this IEnumerable<T> Parents, IEnumerable<N> Children, string MatchingField, string ChildListAtributeName)
         {
             if (Parents.Count() > 0 && Children.Count() > 0)
             {
@@ -24,7 +24,6 @@ namespace Utilities
                 else
                     throw new Exception($"Missing Field '{MatchingField}' does not exist in all list elements");
             }
-            return Parents;
         }
     }
 }
