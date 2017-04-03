@@ -8,21 +8,23 @@ namespace Utilities
 {
     public class MappingObjects
     {
-        public static void MapChildren(this IEnumerable<object> Parents, IEnumerable<object> Children, string MatchingField, string ChildListAtributeName)
+        public IEnumerable<T> MapChildren<T, N>(IEnumerable<T> Parents, IEnumerable<N> Children, string MatchingField, string ChildListAtributeName)
         {
             if (Parents.Count() > 0 && Children.Count() > 0)
             {
-                if (Parents.Select(x => x.GetType().GetProperty(MatchingField)).All(x => x != null) && Children.Select(x => x.GetType().GetProperty(MatchingField)).All(x => x != null)) {
-                    Parallel.ForEach(Parents, parent =>
+                if (Parents.Select(x => x.GetType().GetProperty(MatchingField)).All(x => x != null) && Children.Select(x => x.GetType().GetProperty(MatchingField)).All(x => x != null))
+                {
+                    foreach (var parent in Parents)
                     {
                         var parentValue = parent.GetType().GetProperty(MatchingField).GetValue(parent, null);
-                        var parentChildren = Children.Where(x => x.GetType().GetProperty(MatchingField).GetValue(x, null) == parentValue);
+                        var parentChildren = Children.Where(x => x.GetType().GetProperty(MatchingField).GetValue(x, null).ToString() == parentValue.ToString()).Select(x => (N)x);
                         parent.GetType().GetProperty(ChildListAtributeName).SetValue(parent, parentChildren);
-                    });
+                    }
                 }
                 else
                     throw new Exception($"Missing Field '{MatchingField}' does not exist in all list elements");
             }
+            return Parents;
         }
     }
 }
