@@ -15,14 +15,14 @@ namespace Utilities.Mapping
       {
         if (Parents.Select(x => x.GetType().GetProperty(MatchingField)).All(x => x != null) && Children.Select(x => x.GetType().GetProperty(MatchingField)).All(x => x != null))
         {
-          string listPattern = $"List..\\[{Children.FirstOrDefault().GetType().ToString()}\\]";
+          string listPattern = String.Format("List..\\[{0}\\]", Children.FirstOrDefault().GetType().ToString());
           var r = new Regex(listPattern, RegexOptions.IgnoreCase);
 
           string ChildListAtributeName = Parents.FirstOrDefault().GetType().GetProperties().Where(x => r.Match(x.PropertyType.ToString()).Success).Select(x => x.Name).FirstOrDefault();
 
           if (ChildListAtributeName == null)
           {
-            string ienumerablePattern = $"IEnumerable..\\[{Children.FirstOrDefault().GetType().ToString()}\\]";
+            string ienumerablePattern = String.Format("IEnumerable..\\[{0}\\]", Children.FirstOrDefault().GetType().ToString());
             r = new Regex(ienumerablePattern, RegexOptions.IgnoreCase);
 
             ChildListAtributeName = Parents.FirstOrDefault().GetType().GetProperties().Where(x => r.Match(x.PropertyType.ToString()).Success).Select(x => x.Name).FirstOrDefault();
@@ -38,10 +38,10 @@ namespace Utilities.Mapping
             });
           }
           else
-            throw new Exception($"Parent object does not contain List or IEnumerable of child object");
+            throw new Exception("Parent object does not contain List or IEnumerable of child object");
         }
         else
-          throw new Exception($"Missing Field '{MatchingField}' does not exist in all list elements");
+          throw new Exception(String.Format("Missing Field '{0}' does not exist in all list elements", MatchingField));
       }
     }
   }
